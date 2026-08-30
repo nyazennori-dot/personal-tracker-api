@@ -10,7 +10,7 @@ app=FastAPI()
 #a GET request is initiated to the route("/") to output the message
 @app.get("/")
 async def root ():
-    return{"message:""hello world"}
+    return{"message:""iam on the internet"}
 
 # defines the required shape of data for a new entry: category (text) + value (number)  
 class Entries(BaseModel):
@@ -49,7 +49,7 @@ async def fetch(entry_id:int):
 
 #updating an entry
 @app.put("/entries/{entry_id}")
-async def insert_entry(entry_id:int,entry:Entries):
+async def update_entry(entry_id:int,entry:Entries):
     ac_insert=conn.execute("UPDATE entries SET category = ?, value = ? WHERE id = ?",(entry.category,entry.value,entry_id))
     conn.commit()
     if ac_insert.rowcount==0:
