@@ -4,8 +4,8 @@
 # conn.commit()
 # print(conn.execute("SELECT * FROM entries").fetchall())
 
-def x (loch="ness"):
-    return(loch)
+# def x (loch="ness"):
+#     return(loch)
 
-print(x())
+# print(x())
 
