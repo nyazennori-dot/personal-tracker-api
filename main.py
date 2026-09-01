@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import sqlite3
 from dotenv import load_dotenv
 import os
+from fastapi.middleware.cors import CORSMiddleware
 
 #API_KEY auth
 load_dotenv()
@@ -15,6 +16,12 @@ conn.execute("CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY, catego
 conn.commit()
 
 app=FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 #a GET request is initiated to the route("/") to output the message
 @app.get("/")
 async def root ():
