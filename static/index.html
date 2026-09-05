@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>My Tracker</title>
+<style>
+:root{
+    --primary-color: #cc3366;
+    --bg-color:#f4f4f4;
+}
+
+    h1 {
+        color:var(--primary-color);
+    }
+
+    .form-input {
+        padding: 8px;
+        font-size: 14px;
+        margin-right: 8px;
+    }
+
+#entries-list{
+    list-style: none;
+    padding: 0;
+}
+
+#entries-list li{
+    background: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+}
+.action-btn{
+    margin-left: 8px;
+}
+
+body{
+background: var(--bg-color);
+font-family: arial,sans-serif;
+}
+
+button:hover{
+    background:#ddd;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+    <h1>
+        Personal Tracker
+    </h1>
+<input type="text" id="category-input" class="form-input" placeholder="Category">
+<input type="number" id="value-input" class="form-input" placeholder="Value">
+<button id="add-btn" class="form-input" >Add Entry</button>
+
+    <ul id="entries-list"></ul>
+    
+    <script>
+        function loadentries(){
+        fetch("https://personal-tracker-api-production.up.railway.app/entries")
+        .then(response => response.json())
+        .then(data => {
+        let html="";
+        for (const item of data) {
+            html+="<li>"+ item[1]+": " + item[2]+ 
+            "<button class='action-btn' onclick='deleteEntry("+item[0]+")'>Delete</button>"+
+            "<button class='action-btn' onclick='editEntry("+item[0]+")'>Edit</button></li>";
+        }
+        document.getElementById("entries-list").innerHTML=html
+        });
+    }
+    loadentries();  
+        document.getElementById("add-btn").addEventListener("click",function() {
+            const category=document.getElementById("category-input").value;
+            const value=document.getElementById("value-input").value;
+            fetch("https://personal-tracker-api-production.up.railway.app/entries",{
+
+            method:"POST",
+            headers:{
+                "content-type": "application/json",
+                "x-API-key": "urlifeismine123"
+            },
+            body:JSON.stringify({category:category,value:value})
+        })
+        .then(()=> loadentries());
+    });
+
+    function deleteEntry(id){
+        fetch("https://personal-tracker-api-production.up.railway.app/entries/"+ id,{
+            method:"DELETE",
+            headers:{
+                "x-API-key":"urlifeismine123"
+            }
+        })
+        .then(()=>loadentries());
+
+    };
+    function editEntry(id){
+        const newCategory=prompt("New Category");
+        const newValue=prompt("New Value");
+        fetch("https://personal-tracker-api-production.up.railway.app/entries/"+id,{
+            method:"PUT",
+            headers: {
+                "content-type":"application/json",
+                "x-APi-key":"urlifeismine123"
+            },
+            body: JSON.stringify({category:newCategory,value:parseFloat(newValue)})
+        })
+        .then(()=>loadentries());
+    }
+    </script>
+</body>
+</html>

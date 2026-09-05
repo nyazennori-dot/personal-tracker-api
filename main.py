@@ -4,6 +4,7 @@ import sqlite3
 from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 #API_KEY auth
 load_dotenv()
@@ -22,10 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-#a GET request is initiated to the route("/") to output the message
-@app.get("/")
-async def root ():
-    return{"message:""iam on the internet"}
+
 
 # defines the required shape of data for a new entry: category (text) + value (number)  
 class Entries(BaseModel):
@@ -77,3 +75,5 @@ async def update_entry(entry_id:int,entry:Entries,x_api_key:str=Header(...)):
         return{'status':'entry not updated '}
     return {'status':'updated entry','id':entry_id}
 
+#showing the html ui
+app.mount("/",StaticFiles(directory="static",html=True), name="static")
